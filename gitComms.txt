@@ -1,0 +1,14 @@
+git init
+
+git remote add origin https://github.com/joeljohnsonjj/cypressFramework.git
+git branch -M main
+git push -uf origin main
+
+git fetch origin
+git pull origin main
+
+git add .
+git commit -a -m " "
+git push origin main
+
+git status
