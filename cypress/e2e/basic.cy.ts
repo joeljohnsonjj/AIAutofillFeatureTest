@@ -1,12 +1,5 @@
-import { AgreementPage } from '../Pages/ObjectRepository.cy';
-import {
-    randomAgreementName,
-    randomAgreementDate,
-    randomAgreementNotes,
-    randomResponsibleParty,
-    randomMaintenanceOwnerResponsibility,
-    randomMaintenanceReasoning,
-} from '../utilities/agreementTestData';
+import { createAgreementWithRandomData } from '../Pages/basic.cy';
+import { sendValues } from '../utilities/allureReporting';
 
 describe('Basic Test', () => {
     beforeEach(() => {
@@ -14,16 +7,7 @@ describe('Basic Test', () => {
     });
 
     it('Basic Agreement Creation', () => {
-        const agreementName = randomAgreementName();
-        cy.xpath(AgreementPage.createAgreementButton).click();
-        cy.xpath(AgreementPage.agreementNameInput).type(agreementName);
-        cy.xpath(AgreementPage.agreementDateInput).type(randomAgreementDate());
-        cy.xpath(AgreementPage.agreementNotesTextarea).type(randomAgreementNotes());
-        cy.xpath(AgreementPage.responsiblePartyInput).type(randomResponsibleParty());
-        cy.xpath(AgreementPage.maintenanceOwnerResponsibilityInput).type(randomMaintenanceOwnerResponsibility());
-        cy.xpath(AgreementPage.maintenanceReasoningInput).type(randomMaintenanceReasoning());
-        cy.xpath(AgreementPage.saveAgreementButton).click();
-        cy.xpath(AgreementPage.agreementNameDisplay).should('have.text', agreementName);
-        cy.log('Agreement Successfully Created');
+        sendValues('Basic Agreement Creation', 'Basic Agreement Creation without the usage of the AI model', 'Low');
+        createAgreementWithRandomData();
     });
 });
