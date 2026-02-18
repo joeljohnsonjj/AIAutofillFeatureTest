@@ -9,6 +9,8 @@
  * Prerequisite: MTNNN.pdf must be processed (POST /process) so consolidated JSON exists.
  */
 
+import { sendValues } from '../utilities/allureReporting';
+
 const BASE_URL = 'http://localhost:8000';
 const MTNNN_DOC_ID = 'MTNNN.pdf';
 
@@ -23,6 +25,7 @@ function postQuery(body: { query: string; save_output?: boolean; document_ids: s
 
 describe('MTNNN Query Endpoint - Empty Query', () => {
   it('TC-M01: Empty Query (Default Utilities) - MTNNN', () => {
+    sendValues('Empty query with default utilities on MTNNN document', 'TC-M01: Empty Query (Default Utilities) - MTNNN', 'Medium');
     postQuery({
       query: '',
       save_output: false,
@@ -50,6 +53,7 @@ describe('MTNNN Query Endpoint - Single-Term Queries', () => {
 
   singleTerms.forEach(({ name, query }) => {
     it(name, () => {
+      sendValues(`Single-term query: "${query}" on MTNNN`, name, 'Medium');
       postQuery({
         query,
         save_output: false,
@@ -73,6 +77,7 @@ describe('MTNNN Query Endpoint - Multi-Term Queries', () => {
 
   multiTerms.forEach(({ name, query }) => {
     it(name, () => {
+      sendValues(`Multi-term query: "${query}" on MTNNN`, name, 'Medium');
       postQuery({
         query,
         save_output: false,
@@ -123,6 +128,7 @@ describe('MTNNN Query Endpoint - Hallucination Check (expect 0 obligations)', ()
 
   hallucinationCases.forEach(({ name, query }) => {
     it(name, () => {
+      sendValues(`Hallucination check: expect 0 obligations for query "${query}"`, name, 'High');
       postQuery({
         query,
         save_output: false,
@@ -138,6 +144,7 @@ describe('MTNNN Query Endpoint - Hallucination Check (expect 0 obligations)', ()
 
 describe('MTNNN Query Endpoint - Edge Cases', () => {
   it('TC-E01: Non-existent document ID', () => {
+    sendValues('Query with non-existent document ID should handle gracefully', 'TC-E01: Non-existent document ID', 'High');
     postQuery({
       query: 'rent',
       save_output: false,
@@ -152,6 +159,7 @@ describe('MTNNN Query Endpoint - Edge Cases', () => {
   });
 
   it('TC-E02: Save output enabled', () => {
+    sendValues('Query with save_output enabled returns results', 'TC-E02: Save output enabled', 'Medium');
     postQuery({
       query: 'insurance',
       save_output: true,
@@ -163,6 +171,7 @@ describe('MTNNN Query Endpoint - Edge Cases', () => {
   });
 
   it('TC-E03: Very long query string', () => {
+    sendValues('Query with very long query string is accepted and returns results', 'TC-E03: Very long query string', 'Medium');
     const longQuery =
       'rent payment security deposit property tax insurance common area maintenance utilities water gas electricity HVAC repair replacement indemnification reimbursement late fee default remedies hazardous materials environmental compliance';
     postQuery({
