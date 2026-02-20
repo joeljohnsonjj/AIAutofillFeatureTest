@@ -47,4 +47,7 @@ export const AgreementPage = {
   
   agreementTableRows:
     '//*[@id="root"]/div/div[2]/div[2]/div[1]/table/tbody/tr',
+  
+  backButton:
+    '//*[@id="root"]/div/div/div/button',
 } as const;

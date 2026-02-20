@@ -4,3 +4,7 @@ node_modules/
 # Allure
 allure-report/
 allure-results/
+
+# Documentation (except main README)
+*.md
+!README.md
