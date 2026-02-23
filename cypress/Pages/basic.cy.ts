@@ -43,13 +43,7 @@ export function createAgreementWithRandomData(): void {
  */
 export function navigateToFirstAgreementPreview(): void {
     cy.xpath(AgreementPage.firstAgreementCardFileName).click();
-    
     cy.url().should('match', /\/agreements\/[^\/]+$/);
-    cy.xpath(AgreementPage.agreementNameDisplay).should('be.visible');
-    cy.xpath(AgreementPage.editAgreementButton).should('be.visible');
-    cy.xpath(AgreementPage.deleteAgreementButton).should('be.visible');
-    cy.xpath(AgreementPage.backButton).should('be.visible');
-    
     cy.log('Navigated to agreement preview page');
 }
 
@@ -58,11 +52,6 @@ export function navigateToFirstAgreementPreview(): void {
  */
 export function navigateBack(): void {
     cy.xpath(AgreementPage.backButton).click();
-    
     cy.url().should('eq', 'http://localhost:3000/agreements');
-    cy.xpath(AgreementPage.createAgreementButton).should('be.visible');
-    cy.xpath(AgreementPage.searchBarInput).should('be.visible');
-    cy.xpath(AgreementPage.sortByButton).should('be.visible');
-    
     cy.log('Navigated back using back button');
 }

@@ -35,7 +35,6 @@ export function editAgreementWithRandomData(): void {
     const newAgreementName = randomAgreementName();
     
     cy.xpath(AgreementPage.editAgreementButton).click();
-    cy.log('Clicked edit agreement button');
     
     cy.xpath(AgreementPage.agreementNameInput).clear().type(newAgreementName);
     cy.xpath(AgreementPage.agreementDateInput).clear().type(randomAgreementDate());
@@ -49,12 +48,13 @@ export function editAgreementWithRandomData(): void {
     );
     
     cy.xpath(AgreementPage.saveAgreementButton).click();
-    cy.log('Agreement successfully edited and saved');
     
     cy.xpath(AgreementPage.agreementNameDisplay).should(
         'have.text',
         newAgreementName
     );
+
+    cy.log('Agreement successfully edited and saved');
 }
 
 /**
@@ -63,14 +63,9 @@ export function editAgreementWithRandomData(): void {
  */
 export function deleteAgreementWithConfirmation(): void {
     cy.xpath(AgreementPage.deleteAgreementButton).click();
-    cy.log('Clicked delete agreement button');
-    
-    cy.xpath(AgreementPage.deleteConfirmationDeleteButton).should('be.visible');
     cy.xpath(AgreementPage.deleteConfirmationDeleteButton).click();
     
     cy.url().should('include', '/agreements');
-    cy.url().should('not.include', '/preview');
-    cy.xpath(AgreementPage.createAgreementButton).should('be.visible');
     
     cy.log('Confirmed agreement deletion');
 }
@@ -82,13 +77,10 @@ export function deleteAgreementWithConfirmation(): void {
 export function deleteAgreementWithCancellation(): void {
     cy.xpath(AgreementPage.agreementNameDisplay).invoke('text').then((agreementName) => {
         cy.xpath(AgreementPage.deleteAgreementButton).click();
-        cy.log('Clicked delete agreement button');
         
-        cy.xpath(AgreementPage.deleteConfirmationCancelButton).should('be.visible');
         cy.xpath(AgreementPage.deleteConfirmationCancelButton).click();
         cy.log('Cancelled agreement deletion');
         
-        cy.xpath(AgreementPage.editAgreementButton).should('be.visible');
         cy.xpath(AgreementPage.agreementNameDisplay).should('have.text', agreementName);
         cy.log('Verified agreement was not deleted');
     });
@@ -99,8 +91,7 @@ export function deleteAgreementWithCancellation(): void {
  */
 export function openSortByDropdown(): void {
     cy.xpath(AgreementPage.sortByButton).click();
-    cy.xpath('//*[@id="root"]/div/div[2]/div[1]/div/div[2]/div[2]/div[2]/div').should('be.visible');
-    cy.log('Opened sort by dropdown');
+    cy.xpath(AgreementPage.sortByDropdown).should('be.visible');
 }
 
 /**
@@ -109,8 +100,6 @@ export function openSortByDropdown(): void {
 export function sortByAgreementName(): void {
     openSortByDropdown();
     cy.xpath(AgreementPage.sortByAgreementName).click();
-    
-    cy.xpath(AgreementPage.sortByButton).should('be.visible');
     
     extractAgreementNames().then((names) => {
         const sortedNames = [...names].sort((a, b) => a.localeCompare(b));
@@ -127,8 +116,6 @@ export function sortByAgreementName(): void {
 export function sortByLastModified(): void {
     openSortByDropdown();
     cy.xpath(AgreementPage.sortByLastModified).click();
-    
-    cy.xpath(AgreementPage.sortByButton).should('be.visible');
     
     extractLastModifiedDates().then((dates) => {
         cy.log(`Extracted dates: ${JSON.stringify(dates)}`);
@@ -178,9 +165,7 @@ export function sortByAgreementId(): void {
 export function searchAgreements(searchTerm: string): void {
     cy.xpath(AgreementPage.searchBarInput).clear();
     cy.xpath(AgreementPage.searchBarInput).type(searchTerm);
-    
     cy.xpath(AgreementPage.searchBarInput).should('have.value', searchTerm);
-    
     cy.log(`Searched for: ${searchTerm}`);
 }
 

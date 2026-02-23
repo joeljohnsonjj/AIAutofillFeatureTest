@@ -38,6 +38,8 @@ export const AgreementPage = {
     '//*[@id="root"]/div/div[2]/div[1]/div/div[2]/div[1]/input',
   sortByButton:
     '//*[@id="root"]/div/div[2]/div[1]/div/div[2]/div[2]/button',
+  sortByDropdown:
+    '//*[@id="root"]/div/div[2]/div[1]/div/div[2]/div[2]/div[2]/div',
   sortByAgreementName:
     '//*[@id="root"]/div/div[2]/div[1]/div/div[2]/div[2]/div[2]/div/button[2]',
   sortByLastModified:
