@@ -22,4 +22,12 @@ export const AgreementPage = {
     '/html/body/div/div/main/div/div[3]/div/button[2]',
   agreementNameDisplay:
     '/html/body/div/div/div[2]/div[2]/div[1]/div[2]/div/div[1]/div[1]/div[1]/p',
+  aiSearchInput:
+    '/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[2]/div/input',
+  aiSearchButton:
+    '/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[2]/button',
+  documentsTable:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[1]/div/table",
+  documentsTableRow:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[1]/div/table/thead/tr",
 } as const;
