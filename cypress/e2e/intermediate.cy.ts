@@ -27,6 +27,7 @@ import {
     extractLastModifiedDates,
     findCommonPrefix,
 } from '../Pages/intermediate.cy';
+import { AgreementPage } from '../Pages/ObjectRepository.cy';
 import { sendValues } from '../utilities/allureReporting';
 
 describe('Intermediate Tests - Comprehensive Flows', () => {
@@ -53,11 +54,20 @@ describe('Intermediate Tests - Comprehensive Flows', () => {
         
         clearSearch();
         
-        navigateToFirstAgreementPreview();
+        cy.xpath(AgreementPage.firstAgreementCardFileName)
+            .invoke('text')
+            .then((agreementName) => {
+                navigateToFirstAgreementPreview();
+                deleteAgreementWithConfirmation();
+                
+                cy.url().should('include', '/agreements');
+                
+                extractAgreementNames().then((names) => {
+                    expect(names).to.not.include(agreementName);
+                    cy.log(`Verified "${agreementName}" was deleted`);
+                });
+            });
         
-        deleteAgreementWithConfirmation();
-        
-        cy.url().should('include', '/agreements');
         cy.log('Complete CRUD flow with intermediate functions completed successfully');
     });
 
@@ -107,9 +117,19 @@ describe('Intermediate Tests - Comprehensive Flows', () => {
         
         deleteAgreementWithCancellation();
         
-        deleteAgreementWithConfirmation();
+        cy.xpath(AgreementPage.agreementNameDisplay)
+            .invoke('text')
+            .then((agreementName) => {
+                deleteAgreementWithConfirmation();
+                
+                cy.url().should('include', '/agreements');
+                
+                extractAgreementNames().then((names) => {
+                    expect(names).to.not.include(agreementName);
+                    cy.log(`Verified "${agreementName}" was deleted`);
+                });
+            });
         
-        cy.url().should('include', '/agreements');
         cy.log('Edit and delete scenarios completed successfully');
     });
 
@@ -238,11 +258,20 @@ describe('Delete Agreement Tests - Confirmation Path', () => {
         
         navigateBack();
         
-        navigateToFirstAgreementPreview();
+        cy.xpath(AgreementPage.firstAgreementCardFileName)
+            .invoke('text')
+            .then((agreementName) => {
+                navigateToFirstAgreementPreview();
+                deleteAgreementWithConfirmation();
+                
+                cy.url().should('include', '/agreements');
+                
+                extractAgreementNames().then((names) => {
+                    expect(names).to.not.include(agreementName);
+                    cy.log(`Verified "${agreementName}" was deleted`);
+                });
+            });
         
-        deleteAgreementWithConfirmation();
-        
-        cy.url().should('include', '/agreements');
         cy.log('Agreement deleted successfully with confirmation');
     });
 
@@ -255,9 +284,19 @@ describe('Delete Agreement Tests - Confirmation Path', () => {
 
         createAgreementWithRandomData();
         
-        deleteAgreementWithConfirmation();
+        cy.xpath(AgreementPage.agreementNameDisplay)
+            .invoke('text')
+            .then((agreementName) => {
+                deleteAgreementWithConfirmation();
+                
+                cy.url().should('include', '/agreements');
+                
+                extractAgreementNames().then((names) => {
+                    expect(names).to.not.include(agreementName);
+                    cy.log(`Verified "${agreementName}" was deleted`);
+                });
+            });
         
-        cy.url().should('include', '/agreements');
         cy.log('Create and delete flow completed successfully');
     });
 });
@@ -312,9 +351,19 @@ describe('Delete Agreement Tests - Cancellation Path', () => {
         
         deleteAgreementWithCancellation();
         
-        deleteAgreementWithConfirmation();
+        cy.xpath(AgreementPage.agreementNameDisplay)
+            .invoke('text')
+            .then((agreementName) => {
+                deleteAgreementWithConfirmation();
+                
+                cy.url().should('include', '/agreements');
+                
+                extractAgreementNames().then((names) => {
+                    expect(names).to.not.include(agreementName);
+                    cy.log(`Verified "${agreementName}" was deleted`);
+                });
+            });
         
-        cy.url().should('include', '/agreements');
         cy.log('First cancelled, then confirmed deletion successfully');
     });
 });
@@ -335,9 +384,19 @@ describe('Delete Agreement Tests - Combined Scenarios', () => {
         
         editAgreementWithRandomData();
         
-        deleteAgreementWithConfirmation();
+        cy.xpath(AgreementPage.agreementNameDisplay)
+            .invoke('text')
+            .then((agreementName) => {
+                deleteAgreementWithConfirmation();
+                
+                cy.url().should('include', '/agreements');
+                
+                extractAgreementNames().then((names) => {
+                    expect(names).to.not.include(agreementName);
+                    cy.log(`Verified "${agreementName}" was deleted`);
+                });
+            });
         
-        cy.url().should('include', '/agreements');
         cy.log('Edit then delete flow completed successfully');
     });
 });

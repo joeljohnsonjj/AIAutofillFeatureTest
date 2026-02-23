@@ -18,6 +18,12 @@ import {
  */
 export function navigateBack(): void {
     cy.xpath(AgreementPage.backButton).click();
+    
+    cy.url().should('eq', 'http://localhost:3000/agreements');
+    cy.xpath(AgreementPage.createAgreementButton).should('be.visible');
+    cy.xpath(AgreementPage.searchBarInput).should('be.visible');
+    cy.xpath(AgreementPage.sortByButton).should('be.visible');
+    
     cy.log('Navigated back using back button');
 }
 
@@ -61,6 +67,11 @@ export function deleteAgreementWithConfirmation(): void {
     
     cy.xpath(AgreementPage.deleteConfirmationDeleteButton).should('be.visible');
     cy.xpath(AgreementPage.deleteConfirmationDeleteButton).click();
+    
+    cy.url().should('include', '/agreements');
+    cy.url().should('not.include', '/preview');
+    cy.xpath(AgreementPage.createAgreementButton).should('be.visible');
+    
     cy.log('Confirmed agreement deletion');
 }
 
@@ -69,14 +80,18 @@ export function deleteAgreementWithConfirmation(): void {
  * Prerequisite: Must be on the agreements preview page.
  */
 export function deleteAgreementWithCancellation(): void {
-    cy.xpath(AgreementPage.deleteAgreementButton).click();
-    cy.log('Clicked delete agreement button');
-    
-    cy.xpath(AgreementPage.deleteConfirmationCancelButton).should('be.visible');
-    cy.xpath(AgreementPage.deleteConfirmationCancelButton).click();
-    cy.log('Cancelled agreement deletion');
-    
-    cy.xpath(AgreementPage.editAgreementButton).should('be.visible');
+    cy.xpath(AgreementPage.agreementNameDisplay).invoke('text').then((agreementName) => {
+        cy.xpath(AgreementPage.deleteAgreementButton).click();
+        cy.log('Clicked delete agreement button');
+        
+        cy.xpath(AgreementPage.deleteConfirmationCancelButton).should('be.visible');
+        cy.xpath(AgreementPage.deleteConfirmationCancelButton).click();
+        cy.log('Cancelled agreement deletion');
+        
+        cy.xpath(AgreementPage.editAgreementButton).should('be.visible');
+        cy.xpath(AgreementPage.agreementNameDisplay).should('have.text', agreementName);
+        cy.log('Verified agreement was not deleted');
+    });
 }
 
 /**
@@ -84,6 +99,7 @@ export function deleteAgreementWithCancellation(): void {
  */
 export function openSortByDropdown(): void {
     cy.xpath(AgreementPage.sortByButton).click();
+    cy.xpath('//*[@id="root"]/div/div[2]/div[1]/div/div[2]/div[2]/div[2]/div').should('be.visible');
     cy.log('Opened sort by dropdown');
 }
 
@@ -93,6 +109,15 @@ export function openSortByDropdown(): void {
 export function sortByAgreementName(): void {
     openSortByDropdown();
     cy.xpath(AgreementPage.sortByAgreementName).click();
+    
+    cy.xpath(AgreementPage.sortByButton).should('be.visible');
+    
+    extractAgreementNames().then((names) => {
+        const sortedNames = [...names].sort((a, b) => a.localeCompare(b));
+        expect(names).to.deep.equal(sortedNames);
+        cy.log('Verified agreements are sorted by name');
+    });
+    
     cy.log('Sorted by Agreement Name');
 }
 
@@ -102,6 +127,29 @@ export function sortByAgreementName(): void {
 export function sortByLastModified(): void {
     openSortByDropdown();
     cy.xpath(AgreementPage.sortByLastModified).click();
+    
+    cy.xpath(AgreementPage.sortByButton).should('be.visible');
+    
+    extractLastModifiedDates().then((dates) => {
+        cy.log(`Extracted dates: ${JSON.stringify(dates)}`);
+        
+        const sortedDates = [...dates].sort((a, b) => {
+            const [monthA, dayA, yearA] = a.split('/').map(Number);
+            const [monthB, dayB, yearB] = b.split('/').map(Number);
+            
+            const dateA = new Date(yearA, monthA - 1, dayA);
+            const dateB = new Date(yearB, monthB - 1, dayB);
+            
+            return dateB.getTime() - dateA.getTime();
+        });
+        
+        cy.log(`UI order: ${JSON.stringify(dates)}`);
+        cy.log(`Expected order (newest first): ${JSON.stringify(sortedDates)}`);
+        
+        expect(dates).to.deep.equal(sortedDates);
+        cy.log('Verified agreements are sorted by last modified date (newest first)');
+    });
+    
     cy.log('Sorted by Last Modified');
 }
 
@@ -111,6 +159,15 @@ export function sortByLastModified(): void {
 export function sortByAgreementId(): void {
     openSortByDropdown();
     cy.xpath(AgreementPage.sortByAgreementId).click();
+    
+    cy.xpath(AgreementPage.sortByButton).should('be.visible');
+    
+    extractAgreementIds().then((ids) => {
+        const sortedIds = [...ids].sort((a, b) => a.localeCompare(b));
+        expect(ids).to.deep.equal(sortedIds);
+        cy.log('Verified agreements are sorted by ID');
+    });
+    
     cy.log('Sorted by Agreement ID');
 }
 
@@ -121,6 +178,9 @@ export function sortByAgreementId(): void {
 export function searchAgreements(searchTerm: string): void {
     cy.xpath(AgreementPage.searchBarInput).clear();
     cy.xpath(AgreementPage.searchBarInput).type(searchTerm);
+    
+    cy.xpath(AgreementPage.searchBarInput).should('have.value', searchTerm);
+    
     cy.log(`Searched for: ${searchTerm}`);
 }
 
@@ -183,14 +243,14 @@ export function extractAgreementIds(): Cypress.Chainable<string[]> {
 
 /**
  * Extracts last modified dates from all visible cards on the landing page.
- * Assumes dates are in the third column of the table.
+ * Assumes dates are in the fifth column of the table.
  * @returns Promise resolving to array of date strings
  */
 export function extractLastModifiedDates(): Cypress.Chainable<string[]> {
     return cy.xpath(AgreementPage.agreementTableRows).then(($rows) => {
         const dates: string[] = [];
         $rows.each((index, row) => {
-            const dateElement = Cypress.$(row).find('td:nth-child(3)');
+            const dateElement = Cypress.$(row).find('td:nth-child(5)');
             if (dateElement.length > 0) {
                 const date = dateElement.text().trim();
                 if (date) {
@@ -230,8 +290,10 @@ export function searchByExtractedName(): void {
     extractAgreementNames().then((names) => {
         if (names.length > 0) {
             const searchTerm = findCommonPrefix(names);
+            expect(searchTerm).to.not.be.empty;
             cy.log(`Extracted ${names.length} names, searching for common prefix: "${searchTerm}"`);
             searchAgreements(searchTerm);
+            getVisibleAgreementRows().should('exist');
         } else {
             cy.log('No agreement names found to extract');
         }
@@ -246,8 +308,10 @@ export function searchByExtractedId(): void {
     extractAgreementIds().then((ids) => {
         if (ids.length > 0) {
             const searchTerm = findCommonPrefix(ids);
+            expect(searchTerm).to.not.be.empty;
             cy.log(`Extracted ${ids.length} IDs, searching for common prefix: "${searchTerm}"`);
             searchAgreements(searchTerm);
+            getVisibleAgreementRows().should('exist');
         } else {
             cy.log('No agreement IDs found to extract');
         }
@@ -262,8 +326,10 @@ export function searchByExtractedDate(): void {
     extractLastModifiedDates().then((dates) => {
         if (dates.length > 0) {
             const searchTerm = dates[0];
+            expect(searchTerm).to.not.be.empty;
             cy.log(`Extracted ${dates.length} dates, searching for: "${searchTerm}"`);
             searchAgreements(searchTerm);
+            getVisibleAgreementRows().should('exist');
         } else {
             cy.log('No dates found to extract');
         }
