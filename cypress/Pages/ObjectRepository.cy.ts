@@ -26,8 +26,14 @@ export const AgreementPage = {
     '/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[2]/div/input',
   aiSearchButton:
     '/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[2]/button',
+  aiSearchSnippetsContainer:
+    "//*[@id='root']/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]",
   documentsTable:
     "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[1]/div/table",
   documentsTableRow:
-    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[1]/div/table/thead/tr",
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[1]/div/table/tbody/tr",
+  documentTableHeaderCheckbox:
+    "//*[@id='root']/div/main/div/div[2]/div[2]/div/div[2]/div[1]/div/table/thead/tr/th[1]/input",
+  documentTableDataCheckboxTemplate:
+    "//*[@id='root']/div/main/div/div[2]/div[2]/div/div[2]/div[1]/div/table/tbody/tr[INDEX]/td[1]/input",
 } as const;
