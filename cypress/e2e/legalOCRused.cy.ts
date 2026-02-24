@@ -1,5 +1,6 @@
 import { 
-    createAgreementWithAISearchAndValidation
+    createAgreementWithAISearchAndValidation,
+    createAgreementWithAISnippetAcceptance
 } from '../Pages/legalOCRused.cy';
 import { sendValues } from '../utilities/allureReporting';
 
@@ -53,16 +54,29 @@ describe('AI-Powered Legal Document Search Tests', () => {
             .click();
     });
 
-    it('TC-AI01: Complete agreement creation with random document and AI search', () => {
+    it('TC-AI01: Complete agreement creation with AI search - Manual entry (no snippet acceptance)', () => {
         sendValues(
-            'Create complete agreement with random document selection and AI-powered search',
-            'TC-AI01: Complete Agreement Creation with AI Search',
+            'Create agreement with AI search and manual field entry without accepting AI snippets',
+            'TC-AI01: Agreement Creation - Manual Entry',
             'High'
         );
         
-        // Execute complete agreement creation flow with validation
+        // Execute complete agreement creation flow with manual entry
         const createdAgreementName = createAgreementWithAISearchAndValidation(AI_SEARCH_KEYWORDS);
         
-        cy.log(`Test completed successfully. Created agreement: ${createdAgreementName}`);
+        cy.log(`Test completed successfully. Created agreement with manual entry: ${createdAgreementName}`);
+    });
+
+    it('TC-AI02: Complete agreement creation with AI snippet navigation and acceptance', () => {
+        sendValues(
+            'Create agreement with AI search, navigate through snippets, view PDF evidence, and accept AI snippets',
+            'TC-AI02: Agreement Creation - AI Snippet Acceptance',
+            'High'
+        );
+        
+        // Execute complete agreement creation flow with AI snippet acceptance
+        const createdAgreementName = createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
+        
+        cy.log(`Test completed successfully. Created agreement with AI snippet acceptance: ${createdAgreementName}`);
     });
 });

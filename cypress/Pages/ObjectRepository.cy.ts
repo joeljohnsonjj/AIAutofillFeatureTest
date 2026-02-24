@@ -38,6 +38,20 @@ export const AgreementPage = {
     '/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[2]/button',
   aiSearchSnippetsContainer:
     "//*[@id='root']/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]",
+  aiSnippetAcceptButton:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[2]/div[2]/button",
+  aiSnippetNavigateBackButton:
+  "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[1]/div[2]/div/button[1]//*[local-name()='svg']",
+  aiSnippetNavigateFrontButton:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[1]/div[2]/div/button[2]//*[local-name()='svg']",
+  aiSnippetViewLegalEvidenceButton:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[1]/div[2]/button",
+  aiPdfViewPageNavigateButton:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[2]/div/div/div[1]/div[2]/div/div/button[1]",
+  aiPdfViewSnippetButton:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[1]/div[2]/button",
+  aiPdfViewAcceptButton:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[2]/div[2]/button",
   documentsTable:
     "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[1]/div/table",
   documentsTableRow:
