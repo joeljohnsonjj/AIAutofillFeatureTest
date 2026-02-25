@@ -18,7 +18,13 @@ export const AgreementPage = {
     '/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[4]/div/input',
   maintenanceReasoningInput:
     '/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[5]/div/input',
-    responsiblePartyInputSnippet:
+  responsiblePartySnippet:
+  "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[1]/div/div[1]/p[2]",
+  responsibilitySnippet:
+  "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[1]/div/div[2]/p[2]",
+  reasoningSnippet:
+  "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[1]/div/div[3]/div/p[2]/span[2]",
+  responsiblePartyInputSnippet:
     '/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[4]/div/input',
   maintenanceOwnerResponsibilityInputSnippet:
     '/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[5]/div/input',

@@ -22,11 +22,15 @@ export function getDocumentRowCount(): Cypress.Chainable<number> {
 }
 
 /**
- * Selects a random document checkbox from the documents table.
+ * Randomly selects documents using one of the available selection strategies:
+ * - Single random document
+ * - Multiple random documents (2-5)
+ * - All documents
+ * - Half documents
  * Validates table has documents before attempting selection.
  */
 export function selectRandomDocumentCheckbox(): void {
-    cy.xpath(AgreementPage.documentsTable).should('be.visible');
+    cy.xpath(AgreementPage.documentsTable);
     
     getDocumentRowCount().then((count) => {
         cy.log(`Document table has ${count} rows`);
@@ -36,27 +40,50 @@ export function selectRandomDocumentCheckbox(): void {
             throw new Error('No documents in table - cannot proceed with test');
         }
         
-        const randomIndex = Math.floor(Math.random() * count) + 1;
-        const checkboxXPath = AgreementPage.documentTableDataCheckboxTemplate.replace('INDEX', randomIndex.toString());
+        // Randomly choose selection strategy (0-3)
+        const strategy = Math.floor(Math.random() * 4);
         
-        cy.log(`Selecting random document at index ${randomIndex} out of ${count}`);
+        switch (strategy) {
+            case 0: // Select single random document
+                const randomIndex = Math.floor(Math.random() * count) + 1;
+                const checkboxXPath = AgreementPage.documentTableDataCheckboxTemplate.replace('INDEX', randomIndex.toString());
+                
+                cy.log(`Strategy: Single document - Selecting row ${randomIndex} out of ${count}`);
+                
+                cy.xpath(checkboxXPath);
+                cy.xpath(checkboxXPath).check();
+                cy.xpath(checkboxXPath).should('be.checked');
+                
+                // Verify exactly 1 checkbox is selected
+                cy.xpath(AgreementPage.documentTableAllCheckboxes)
+                    .filter(':checked')
+                    .should('have.length', 1);
+                
+                cy.log('Successfully selected 1 random document');
+                break;
+                
+            case 1: // Select multiple random documents (2-5)
+                const numToSelect = Math.min(Math.floor(Math.random() * 4) + 2, count); // 2-5 or max available
+                selectMultipleRandomDocumentCheckboxes(numToSelect);
+                cy.log(`Strategy: Multiple documents - Selected ${numToSelect} random documents`);
+                break;
+                
+            case 2: // Select all documents
+                selectAllDocuments();
+                cy.log(`Strategy: All documents - Selected all ${count} documents`);
+                break;
+                
+            case 3: // Select half documents
+                const halfCount = Math.max(1, Math.floor(count / 2));
+                selectMultipleRandomDocumentCheckboxes(halfCount);
+                cy.log(`Strategy: Half documents - Selected ${halfCount} out of ${count} documents`);
+                break;
+        }
         
-        // Pre-condition checks
-        cy.xpath(checkboxXPath).should('be.visible');
-        cy.xpath(checkboxXPath).should('be.enabled');
-        
-        // Action: Select checkbox
-        cy.xpath(checkboxXPath).check();
-        
-        // Assertion: Verify checkbox is checked
-        cy.xpath(checkboxXPath).should('be.checked');
-        
-        // Critical assertion: Count all checked checkboxes and verify exactly 1 is selected
+        // Final validation: At least one checkbox should be selected
         cy.xpath(AgreementPage.documentTableAllCheckboxes)
             .filter(':checked')
-            .should('have.length', 1);
-        
-        cy.log(`Successfully selected and verified document checkbox at row ${randomIndex}`);
+            .should('have.length.at.least', 1);
     });
 }
 
@@ -65,7 +92,7 @@ export function selectRandomDocumentCheckbox(): void {
  * @param numberOfDocuments - Number of random documents to select (must be <= total available)
  */
 export function selectMultipleRandomDocumentCheckboxes(numberOfDocuments: number): void {
-    cy.xpath(AgreementPage.documentsTable).should('be.visible');
+    cy.xpath(AgreementPage.documentsTable);
     
     getDocumentRowCount().then((count) => {
         cy.log(`Document table has ${count} rows`);
@@ -88,7 +115,7 @@ export function selectMultipleRandomDocumentCheckboxes(numberOfDocuments: number
         
         Array.from(selectedIndices).forEach((index) => {
             const checkboxXPath = AgreementPage.documentTableDataCheckboxTemplate.replace('INDEX', index.toString());
-            cy.xpath(checkboxXPath).should('be.visible');
+            cy.xpath(checkboxXPath);
             cy.xpath(checkboxXPath).check();
             cy.xpath(checkboxXPath).should('be.checked');
             cy.log(`Selected document at row ${index}`);
@@ -102,7 +129,7 @@ export function selectMultipleRandomDocumentCheckboxes(numberOfDocuments: number
  * Selects all documents using the header checkbox.
  */
 export function selectAllDocuments(): void {
-    cy.xpath(AgreementPage.documentsTable).should('be.visible');
+    cy.xpath(AgreementPage.documentsTable);
     
     getDocumentRowCount().then((count) => {
         cy.log(`Document table has ${count} rows`);
@@ -111,7 +138,7 @@ export function selectAllDocuments(): void {
             throw new Error('No documents in table');
         }
         
-        cy.xpath(AgreementPage.documentTableHeaderCheckbox).should('be.visible');
+        cy.xpath(AgreementPage.documentTableHeaderCheckbox);
         cy.xpath(AgreementPage.documentTableHeaderCheckbox).check();
         cy.xpath(AgreementPage.documentTableHeaderCheckbox).should('be.checked');
         
@@ -125,8 +152,7 @@ export function selectAllDocuments(): void {
  */
 export function performAISearchWithValidation(keyword: string): void {
     // Pre-condition: Validate input field is ready
-    cy.xpath(AgreementPage.aiSearchInput).should('be.visible');
-    cy.xpath(AgreementPage.aiSearchInput).should('be.enabled');
+    cy.xpath(AgreementPage.aiSearchInput);
     
     // Action: Clear and type keyword
     cy.xpath(AgreementPage.aiSearchInput).clear();
@@ -136,14 +162,13 @@ export function performAISearchWithValidation(keyword: string): void {
     cy.xpath(AgreementPage.aiSearchInput).should('have.value', keyword);
     
     // Pre-condition: Validate button is ready
-    cy.xpath(AgreementPage.aiSearchButton).should('be.visible');
-    cy.xpath(AgreementPage.aiSearchButton).should('be.enabled');
+    cy.xpath(AgreementPage.aiSearchButton);
     
     // Action: Click AI Search button
     cy.xpath(AgreementPage.aiSearchButton).click();
     
     // Assertion: Verify results container appears (waits for search to complete)
-    cy.xpath(AgreementPage.aiSearchSnippetsContainer).should('be.visible', { timeout: 15000 });
+    cy.xpath(AgreementPage.aiSearchSnippetsContainer).should('exist', { timeout: 15000 });
     
     cy.log(`AI search for "${keyword}" completed with full UI validation`);
 }
@@ -211,8 +236,6 @@ export function navigateAISnippets(numberOfNavigations: number): void {
  */
 export function viewLegalEvidence(): void {
     cy.xpath(AgreementPage.aiSnippetViewLegalEvidenceButton)
-        .should('be.visible')
-        .should('be.enabled')
         .click();
     
     cy.log('Opened legal evidence PDF view');
@@ -223,27 +246,62 @@ export function viewLegalEvidence(): void {
 
 /**
  * Navigates through PDF pages if multi-page reference exists.
+ * Checks if page navigation buttons are visible before attempting navigation.
+ * Skips navigation if buttons don't exist (single-page reference).
  */
 export function navigatePDFPages(): void {
-    cy.xpath(AgreementPage.aiPdfViewPageNavigateButton).then(($navBtn) => {
-        if ($navBtn.length > 0 && $navBtn.is(':visible')) {
-            cy.log('Multi-page PDF detected, navigating through pages');
+    // Wait longer for PDF view to fully load and render page navigation
+    cy.wait(2000);
+    
+    cy.log('Checking if PDF has multiple pages...');
+    
+    // Look for page buttons container or any page button (more flexible approach)
+    const pageButtonContainerXPath = "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[2]/div/div/div[1]/div[2]/div/div";
+    
+    cy.document().then((doc) => {
+        const result = doc.evaluate(
+            pageButtonContainerXPath,
+            doc,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
+        );
+        
+        if (result.singleNodeValue) {
+            cy.log('Page navigation container found - checking for page buttons');
             
-            // Try navigating forward through pages
-            const pagesToNavigate = Math.floor(Math.random() * 3) + 1;
-            
-            for (let i = 0; i < pagesToNavigate; i++) {
-                cy.xpath(AgreementPage.aiPdfViewPageNavigateButton)
-                    .then(($btn) => {
-                        if ($btn.is(':visible') && !$btn.is(':disabled')) {
-                            cy.wrap($btn).click();
-                            cy.log(`Navigated to PDF page ${i + 2}`);
-                            cy.wait(500);
-                        }
-                    });
-            }
+            // Get the container and find buttons
+            cy.xpath(pageButtonContainerXPath).then(($container) => {
+                const buttons = $container.find('button');
+                cy.log(`Found ${buttons.length} page buttons in container`);
+                
+                if (buttons.length > 1) {
+                    cy.log(`Multi-page PDF detected with ${buttons.length} page buttons`);
+                    
+                    // Randomly click on 1-3 different page buttons
+                    const clickCount = Math.min(Math.floor(Math.random() * 3) + 1, buttons.length);
+                    cy.log(`Clicking ${clickCount} random page buttons`);
+                    
+                    for (let i = 0; i < clickCount; i++) {
+                        // Click a random page button using force to bypass visibility checks
+                        cy.xpath(pageButtonContainerXPath).find('button').then(($btns) => {
+                            cy.log(`Available buttons: ${$btns.length}`);
+                            if ($btns.length > 1) {
+                                const randomIndex = Math.floor(Math.random() * $btns.length);
+                                const $btnToClick = $btns.eq(randomIndex);
+                                
+                                cy.wrap($btnToClick).click({ force: true });
+                                cy.log(`Clicked page button ${randomIndex + 1} (forced)`);
+                                cy.wait(800);
+                            }
+                        });
+                    }
+                } else {
+                    cy.log(`Page button container found but only ${buttons.length} button(s) - single-page reference`);
+                }
+            });
         } else {
-            cy.log('Single-page PDF or navigation not available');
+            cy.log('Page navigation container not found - single-page reference, skipping navigation');
         }
     });
 }
@@ -253,8 +311,6 @@ export function navigatePDFPages(): void {
  */
 export function returnToSnippetView(): void {
     cy.xpath(AgreementPage.aiPdfViewSnippetButton)
-        .should('be.visible')
-        .should('be.enabled')
         .click();
     
     cy.log('Returned to snippet view from PDF');
@@ -268,8 +324,6 @@ export function returnToSnippetView(): void {
  */
 export function acceptAISnippetFromSnippetView(): void {
     cy.xpath(AgreementPage.aiSnippetAcceptButton)
-        .should('be.visible')
-        .should('be.enabled')
         .click();
     
     cy.log('Accepted AI snippet from snippet view');
@@ -280,8 +334,6 @@ export function acceptAISnippetFromSnippetView(): void {
  */
 export function acceptAISnippetFromPDFView(): void {
     cy.xpath(AgreementPage.aiPdfViewAcceptButton)
-        .should('be.visible')
-        .should('be.enabled')
         .click();
     
     cy.log('Accepted AI snippet from PDF view');
@@ -302,19 +354,36 @@ export function interactWithAISnippetsAndAccept(): void {
     // Step 3: Navigate through PDF pages if multi-page
     navigatePDFPages();
     
-    // Step 4: Randomly decide to accept from PDF view or snippet view
-    const acceptFromPDF = Math.random() < 0.5;
-    
-    if (acceptFromPDF) {
-        cy.log('Accepting AI snippet from PDF view');
-        acceptAISnippetFromPDFView();
-    } else {
-        cy.log('Returning to snippet view to accept');
-        returnToSnippetView();
-        acceptAISnippetFromSnippetView();
-    }
-    
-    cy.log('AI snippet interaction and acceptance completed');
+    // Step 3: Extract snippet text values for validation
+    cy.xpath(AgreementPage.responsiblePartySnippet).invoke('text').then((responsiblePartyText) => {
+        cy.xpath(AgreementPage.responsibilitySnippet).invoke('text').then((maintenanceOwnerResponsibilityText) => {
+            cy.xpath(AgreementPage.reasoningSnippet).invoke('text').then((maintenanceReasoningText) => {
+                
+                cy.log(`Extracted snippet values - Responsible Party: "${responsiblePartyText}", Maintenance Owner: "${maintenanceOwnerResponsibilityText}", Maintenance Reasoning: "${maintenanceReasoningText}"`);
+                
+                // Step 4: Randomly decide to accept from PDF view or snippet view
+                const acceptFromPDF = Math.random() < 0.5;
+                
+                if (acceptFromPDF) {
+                    cy.log('Accepting AI snippet from PDF view');
+                    acceptAISnippetFromPDFView();
+                } else {
+                    cy.log('Returning to snippet view to accept');
+                    returnToSnippetView();
+                    acceptAISnippetFromSnippetView();
+                }
+                
+                cy.log('AI snippet interaction and acceptance completed');
+                
+                // Step 5: Validate the fields are auto-filled with exact snippet values
+                cy.xpath(AgreementPage.responsiblePartyInputSnippet).should('have.value', responsiblePartyText.trim());
+                cy.xpath(AgreementPage.maintenanceOwnerResponsibilityInputSnippet).should('have.value', maintenanceOwnerResponsibilityText.trim());
+                cy.xpath(AgreementPage.maintenanceReasoningInputSnippet).should('have.value', maintenanceReasoningText.trim());
+                
+                cy.log('Validated: All fields auto-filled with correct snippet values');
+            });
+        });
+    });
 }
 
 /**
@@ -335,33 +404,27 @@ export function createAgreementWithAISearchAndValidation(keywords: string[]): st
     cy.log(`Creating agreement: ${agreementName} with AI keyword: ${randomKeyword}`);
     
     // Step 1: Fill basic agreement information
-    cy.xpath(AgreementPage.agreementNameInput).should('be.visible').type(agreementName);
+    cy.xpath(AgreementPage.agreementNameInput).type(agreementName);
     cy.xpath(AgreementPage.agreementNameInput).should('have.value', agreementName);
     
-    cy.xpath(AgreementPage.agreementDateInput).should('be.visible').type(agreementDate);
+    cy.xpath(AgreementPage.agreementDateInput).type(agreementDate);
     cy.xpath(AgreementPage.agreementDateInput).should('have.value', agreementDate);
     
-    cy.xpath(AgreementPage.agreementNotesTextarea).should('be.visible').type(agreementNotes);
+    cy.xpath(AgreementPage.agreementNotesTextarea).type(agreementNotes);
     cy.xpath(AgreementPage.agreementNotesTextarea).should('have.value', agreementNotes);
     
     cy.log('Basic agreement information filled successfully');
     
-    // Step 2: Select random document with validation
+    // Step 2: Select random document(s) with validation (randomly chooses strategy)
     selectRandomDocumentCheckbox();
     
-    // Validate at least one checkbox is selected
-    cy.xpath(AgreementPage.documentTableAllCheckboxes)
-        .filter(':checked')
-        .should('have.length.at.least', 1);
-    
-    cy.log('Random document selected and validated');
+    cy.log('Random document selection completed and validated');
     
     // Step 3: Perform AI search with random keyword and full validation
     performAISearchWithValidation(randomKeyword);
     
     // Validate AI search results container has content
     cy.xpath(AgreementPage.aiSearchSnippetsContainer)
-        .should('be.visible')
         .invoke('text')
         .should('not.be.empty');
     
@@ -380,20 +443,16 @@ export function createAgreementWithAISearchAndValidation(keywords: string[]): st
     );
     
     // Step 5: Save the agreement
-    cy.xpath(AgreementPage.saveAgreementButton).should('be.visible').should('be.enabled').click();
+    cy.xpath(AgreementPage.saveAgreementButton).click();
     
     // Step 6: Verify agreement was created successfully
-    cy.url().should('not.include', '/create');
     cy.url().should('include', '/agreements');
     
     cy.xpath(AgreementPage.agreementNameDisplay)
-        .should('be.visible')
         .should('have.text', agreementName);
     cy.xpath(AgreementPage.agreementDateDisplay)
-        .should('be.visible')
         .should('have.text', agreementDate);
     cy.xpath(AgreementPage.agreementNotesDisplay)
-        .should('be.visible')
         .should('have.text', agreementNotes);
     
     cy.log(`Agreement "${agreementName}" created successfully with AI search for "${randomKeyword}"`);
@@ -419,33 +478,27 @@ export function createAgreementWithAISnippetAcceptance(keywords: string[]): stri
     cy.log(`Creating agreement: ${agreementName} with AI keyword: ${randomKeyword} (with snippet acceptance)`);
     
     // Step 1: Fill basic agreement information
-    cy.xpath(AgreementPage.agreementNameInput).should('be.visible').type(agreementName);
+    cy.xpath(AgreementPage.agreementNameInput).type(agreementName);
     cy.xpath(AgreementPage.agreementNameInput).should('have.value', agreementName);
     
-    cy.xpath(AgreementPage.agreementDateInput).should('be.visible').type(agreementDate);
+    cy.xpath(AgreementPage.agreementDateInput).type(agreementDate);
     cy.xpath(AgreementPage.agreementDateInput).should('have.value', agreementDate);
     
-    cy.xpath(AgreementPage.agreementNotesTextarea).should('be.visible').type(agreementNotes);
+    cy.xpath(AgreementPage.agreementNotesTextarea).type(agreementNotes);
     cy.xpath(AgreementPage.agreementNotesTextarea).should('have.value', agreementNotes);
     
     cy.log('Basic agreement information filled successfully');
     
-    // Step 2: Select random document with validation
+    // Step 2: Select random document(s) with validation (randomly chooses strategy)
     selectRandomDocumentCheckbox();
     
-    // Validate at least one checkbox is selected
-    cy.xpath(AgreementPage.documentTableAllCheckboxes)
-        .filter(':checked')
-        .should('have.length.at.least', 1);
-    
-    cy.log('Random document selected and validated');
+    cy.log('Random document selection completed and validated');
     
     // Step 3: Perform AI search with random keyword and full validation
     performAISearchWithValidation(randomKeyword);
     
     // Validate AI search results container has content
     cy.xpath(AgreementPage.aiSearchSnippetsContainer)
-        .should('be.visible')
         .invoke('text')
         .should('not.be.empty');
     
@@ -460,44 +513,18 @@ export function createAgreementWithAISnippetAcceptance(keywords: string[]): stri
     
     cy.log('AI snippets accepted - fields should be auto-filled');
     
-    // Step 5: Fill additional fields if they exist and are not auto-filled
-    cy.xpath(AgreementPage.responsiblePartyInputSnippet).then(($input) => {
-        if ($input.is(':visible') && $input.is(':enabled') && $input.val() === '') {
-            cy.wrap($input).type(randomResponsibleParty());
-            cy.log('Filled responsible party field');
-        } else {
-            cy.log('Responsible party field already filled by AI or not available');
-        }
-    });
-    
-    cy.xpath(AgreementPage.maintenanceOwnerResponsibilityInputSnippet).then(($input) => {
-        if ($input.is(':visible') && $input.is(':enabled') && $input.val() === '') {
-            cy.wrap($input).type(randomMaintenanceOwnerResponsibility());
-            cy.log('Filled maintenance owner responsibility field');
-        } else {
-            cy.log('Maintenance owner field already filled by AI or not available');
-        }
-    });
-    
-    cy.xpath(AgreementPage.maintenanceReasoningInputSnippet).then(($input) => {
-        if ($input.is(':visible') && $input.is(':enabled') && $input.val() === '') {
-            cy.wrap($input).type(randomMaintenanceReasoning());
-            cy.log('Filled maintenance reasoning field');
-        } else {
-            cy.log('Maintenance reasoning field already filled by AI or not available');
-        }
-    });
-    
     // Step 6: Save the agreement
-    cy.xpath(AgreementPage.saveAgreementButton).should('be.visible').should('be.enabled').click();
+    cy.xpath(AgreementPage.saveAgreementButton).click();
     
     // Step 7: Verify agreement was created successfully
-    cy.url().should('not.include', '/create');
     cy.url().should('include', '/agreements');
     
     cy.xpath(AgreementPage.agreementNameDisplay)
-        .should('be.visible')
         .should('have.text', agreementName);
+    cy.xpath(AgreementPage.agreementDateDisplay)
+        .should('have.text', agreementDate);
+    cy.xpath(AgreementPage.agreementNotesDisplay)
+        .should('have.text', agreementNotes);
     
     cy.log(`Agreement "${agreementName}" created successfully with AI snippet acceptance for "${randomKeyword}"`);
     

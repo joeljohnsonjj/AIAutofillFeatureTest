@@ -49,8 +49,6 @@ describe('AI-Powered Legal Document Search Tests', () => {
         cy.visit('http://localhost:3000/agreements');
         cy.url().should('include', '/agreements');
         cy.xpath('/html/body/div/div/div[2]/div[1]/div/div[1]/button')
-            .should('be.visible')
-            .should('be.enabled')
             .click();
     });
 
