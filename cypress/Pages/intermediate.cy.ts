@@ -33,25 +33,44 @@ export function navigateBack(): void {
  */
 export function editAgreementWithRandomData(): void {
     const newAgreementName = randomAgreementName();
-    
+    const newAgreementDate = randomAgreementDate();
+    const newAgreementNotes = randomAgreementNotes();
+    const newResponsibleParty = randomResponsibleParty();
+    const newMaintenanceOwnerResponsibility = randomMaintenanceOwnerResponsibility();
+    const newMaintenanceReasoning = randomMaintenanceReasoning();
+
     cy.xpath(AgreementPage.editAgreementButton).click();
-    
     cy.xpath(AgreementPage.agreementNameInput).clear().type(newAgreementName);
-    cy.xpath(AgreementPage.agreementDateInput).clear().type(randomAgreementDate());
-    cy.xpath(AgreementPage.agreementNotesTextarea).clear().type(randomAgreementNotes());
-    cy.xpath(AgreementPage.responsiblePartyInput).clear().type(randomResponsibleParty());
-    cy.xpath(AgreementPage.maintenanceOwnerResponsibilityInput).clear().type(
-        randomMaintenanceOwnerResponsibility()
-    );
-    cy.xpath(AgreementPage.maintenanceReasoningInput).clear().type(
-        randomMaintenanceReasoning()
-    );
-    
+    cy.xpath(AgreementPage.agreementDateInput).clear().type(newAgreementDate);
+    cy.xpath(AgreementPage.agreementNotesTextarea).clear().type(newAgreementNotes);
+    cy.xpath(AgreementPage.responsiblePartyInput).clear().type(newResponsibleParty);
+    cy.xpath(AgreementPage.maintenanceOwnerResponsibilityInput).clear().type(newMaintenanceOwnerResponsibility);
+    cy.xpath(AgreementPage.maintenanceReasoningInput).clear().type(newMaintenanceReasoning);
     cy.xpath(AgreementPage.saveAgreementButton).click();
     
     cy.xpath(AgreementPage.agreementNameDisplay).should(
         'have.text',
         newAgreementName
+    );
+    cy.xpath(AgreementPage.agreementDateDisplay).should(
+        'have.text',
+        newAgreementDate
+    );
+    cy.xpath(AgreementPage.agreementNotesDisplay).should(
+        'have.text',
+        newAgreementNotes
+    );
+    cy.xpath(AgreementPage.responsiblePartyDisplay).should(
+        'have.text',
+        newResponsibleParty
+    );
+    cy.xpath(AgreementPage.maintenanceOwnerResponsibilityDisplay).should(
+        'have.text',
+        newMaintenanceOwnerResponsibility
+    );
+    cy.xpath(AgreementPage.maintenanceReasoningDisplay).should(
+        'have.text',
+        newMaintenanceReasoning
     );
 
     cy.log('Agreement successfully edited and saved');
@@ -61,13 +80,13 @@ export function editAgreementWithRandomData(): void {
  * Deletes an agreement and confirms the deletion.
  * Prerequisite: Must be on the agreements preview page.
  */
-export function deleteAgreementWithConfirmation(): void {
+export function deleteAgreementWithConfirmation(agreementName: string): void {
     cy.xpath(AgreementPage.deleteAgreementButton).click();
     cy.xpath(AgreementPage.deleteConfirmationDeleteButton).click();
-    
-    cy.url().should('include', '/agreements');
-    
-    cy.log('Confirmed agreement deletion');
+    extractAgreementNames().then((names) => {
+        expect(names).to.not.include(agreementName);
+        cy.log(`Verified "${agreementName}" was deleted`);
+    });
 }
 
 /**
@@ -160,13 +179,31 @@ export function sortByAgreementId(): void {
 
 /**
  * Searches for agreements using the search bar.
+ * Asserts that when results exist, the first visible agreement row contains the search term
+ * in its name, ID, or last modified date.
  * @param searchTerm - The term to search for
  */
 export function searchAgreements(searchTerm: string): void {
     cy.xpath(AgreementPage.searchBarInput).clear();
     cy.xpath(AgreementPage.searchBarInput).type(searchTerm);
-    cy.xpath(AgreementPage.searchBarInput).should('have.value', searchTerm);
-    cy.log(`Searched for: ${searchTerm}`);
+    cy.xpath(AgreementPage.agreementTableRows).should(($rows) => {
+        if ($rows.length >= 1) {
+            const first = $rows[0];
+            const name = Cypress.$(first).find('td:nth-child(1) button').text().trim();
+            const id = Cypress.$(first).find('td:nth-child(2)').text().trim();
+            const date = Cypress.$(first).find('td:nth-child(5)').text().trim();
+            const term = searchTerm.toLowerCase();
+            const matches =
+                name.toLowerCase().includes(term) ||
+                id.toLowerCase().includes(term) ||
+                date.toLowerCase().includes(term);
+            expect(
+                matches,
+                `First result should contain "${searchTerm}" in name, ID, or date (got name="${name}", id="${id}", date="${date}")`
+            ).to.be.true;
+        }
+    });
+    cy.log(`Searched for: ${searchTerm} completed`);
 }
 
 /**
@@ -174,7 +211,6 @@ export function searchAgreements(searchTerm: string): void {
  */
 export function clearSearch(): void {
     cy.xpath(AgreementPage.searchBarInput).clear();
-    cy.log('Cleared search');
 }
 
 /**

@@ -22,6 +22,16 @@ export const AgreementPage = {
     '/html/body/div/div/main/div/div[3]/div/button[2]',
   agreementNameDisplay:
     '/html/body/div/div/div[2]/div[2]/div[1]/div[2]/div/div[1]/div[1]/div[1]/p',
+  agreementDateDisplay:
+    '/html/body/div/div/div[2]/div[2]/div[1]/div[2]/div/div[1]/div[1]/div[2]/p',
+  agreementNotesDisplay:
+    '/html/body/div/div/div[2]/div[2]/div[1]/div[2]/div/div[1]/div[2]/p',
+  responsiblePartyDisplay:
+    '/html/body/div/div/div[2]/div[2]/div[1]/div[2]/div/div[2]/div/div[1]/p',
+  maintenanceOwnerResponsibilityDisplay:
+    '/html/body/div/div/div[2]/div[2]/div[1]/div[2]/div/div[2]/div/div[2]/p',
+  maintenanceReasoningDisplay:
+    '/html/body/div/div/div[2]/div[2]/div[1]/div[2]/div/div[2]/div/div[3]/p',
   
   firstAgreementCardFileName:
     '//*[@id="root"]/div/div[2]/div[2]/div[1]/table/tbody/tr[1]/td[1]/button',

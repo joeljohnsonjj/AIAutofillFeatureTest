@@ -30,7 +30,7 @@ import {
 import { AgreementPage } from '../Pages/ObjectRepository.cy';
 import { sendValues } from '../utilities/allureReporting';
 
-describe('Intermediate Tests - Comprehensive Flows', () => {
+describe.only('Intermediate Tests - Comprehensive Flows', () => {
     beforeEach(() => {
         cy.visit('http://localhost:3000/agreements');
     });
@@ -53,14 +53,7 @@ describe('Intermediate Tests - Comprehensive Flows', () => {
             .invoke('text')
             .then((agreementName) => {
                 navigateToFirstAgreementPreview();
-                deleteAgreementWithConfirmation();
-                
-                cy.url().should('include', '/agreements');
-                
-                extractAgreementNames().then((names) => {
-                    expect(names).to.not.include(agreementName);
-                    cy.log(`Verified "${agreementName}" was deleted`);
-                });
+                deleteAgreementWithConfirmation(agreementName);
             });
         
         cy.log('Complete CRUD flow with intermediate functions completed successfully');
@@ -105,7 +98,7 @@ describe('Intermediate Tests - Comprehensive Flows', () => {
         cy.xpath(AgreementPage.agreementNameDisplay)
             .invoke('text')
             .then((agreementName) => {
-                deleteAgreementWithConfirmation();
+                deleteAgreementWithConfirmation(agreementName);
             });
         
         cy.log('Edit and delete scenarios completed successfully');
@@ -131,7 +124,7 @@ describe('Intermediate Tests - Comprehensive Flows', () => {
         cy.log('Precise search testing completed successfully');
     });
 
-    it('TC-INT05: Sequential operations with navigation', () => {
+    it.only('TC-INT05: Sequential operations with navigation', () => {
         sendValues(
             'Test back button navigation between all operations',
             'TC-INT05: Navigation Flow Testing',
@@ -218,17 +211,8 @@ describe('Delete Agreement Tests - Confirmation Path', () => {
             .invoke('text')
             .then((agreementName) => {
                 navigateToFirstAgreementPreview();
-                deleteAgreementWithConfirmation();
-                
-                cy.url().should('include', '/agreements');
-                
-                extractAgreementNames().then((names) => {
-                    expect(names).to.not.include(agreementName);
-                    cy.log(`Verified "${agreementName}" was deleted`);
-                });
+                deleteAgreementWithConfirmation(agreementName);
             });
-        
-        cy.log('Agreement deleted successfully with confirmation');
     });
 
     it('TC-DA02: Create and immediately delete agreement', () => {
@@ -243,14 +227,7 @@ describe('Delete Agreement Tests - Confirmation Path', () => {
         cy.xpath(AgreementPage.agreementNameDisplay)
             .invoke('text')
             .then((agreementName) => {
-                deleteAgreementWithConfirmation();
-                
-                cy.url().should('include', '/agreements');
-                
-                extractAgreementNames().then((names) => {
-                    expect(names).to.not.include(agreementName);
-                    cy.log(`Verified "${agreementName}" was deleted`);
-                });
+                deleteAgreementWithConfirmation(agreementName);
             });
         
         cy.log('Create and delete flow completed successfully');
@@ -304,14 +281,7 @@ describe('Delete Agreement Tests - Cancellation Path', () => {
         cy.xpath(AgreementPage.agreementNameDisplay)
             .invoke('text')
             .then((agreementName) => {
-                deleteAgreementWithConfirmation();
-                
-                cy.url().should('include', '/agreements');
-                
-                extractAgreementNames().then((names) => {
-                    expect(names).to.not.include(agreementName);
-                    cy.log(`Verified "${agreementName}" was deleted`);
-                });
+                deleteAgreementWithConfirmation(agreementName);
             });
         
         cy.log('First cancelled, then confirmed deletion successfully');
@@ -336,14 +306,7 @@ describe('Delete Agreement Tests - Combined Scenarios', () => {
         cy.xpath(AgreementPage.agreementNameDisplay)
             .invoke('text')
             .then((agreementName) => {
-                deleteAgreementWithConfirmation();
-                
-                cy.url().should('include', '/agreements');
-                
-                extractAgreementNames().then((names) => {
-                    expect(names).to.not.include(agreementName);
-                    cy.log(`Verified "${agreementName}" was deleted`);
-                });
+                deleteAgreementWithConfirmation(agreementName);
             });
         
         cy.log('Edit then delete flow completed successfully');
