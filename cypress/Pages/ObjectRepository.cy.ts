@@ -18,6 +18,18 @@ export const AgreementPage = {
     '/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[4]/div/input',
   maintenanceReasoningInput:
     '/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[5]/div/input',
+  responsiblePartySnippet:
+  "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[1]/div/div[1]/p[2]",
+  responsibilitySnippet:
+  "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[1]/div/div[2]/p[2]",
+  reasoningSnippet:
+  "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[1]/div/div[3]/div/p[2]/span[2]",
+  responsiblePartyInputSnippet:
+    '/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[4]/div/input',
+  maintenanceOwnerResponsibilityInputSnippet:
+    '/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[5]/div/input',
+  maintenanceReasoningInputSnippet:
+    '/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[6]/div/input',
   saveAgreementButton:
     '/html/body/div/div/main/div/div[3]/div/button[2]',
   agreementNameDisplay:
@@ -32,6 +44,38 @@ export const AgreementPage = {
     '/html/body/div/div/div[2]/div[2]/div[1]/div[2]/div/div[2]/div/div[2]/p',
   maintenanceReasoningDisplay:
     '/html/body/div/div/div[2]/div[2]/div[1]/div[2]/div/div[2]/div/div[3]/p',
+  aiSearchInput:
+    '/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[2]/div/input',
+  aiSearchButton:
+    '/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[2]/button',
+  aiSearchSnippetsContainer:
+    "//*[@id='root']/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]",
+  aiSnippetAcceptButton:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[2]/div[2]/button",
+  aiSnippetNavigateBackButton:
+  "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[1]/div[2]/div/button[1]//*[local-name()='svg']",
+  aiSnippetNavigateFrontButton:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[1]/div[2]/div/button[2]//*[local-name()='svg']",
+  aiSnippetViewLegalEvidenceButton:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[1]/div[2]/button",
+  aiPdfViewPageNavigateButton:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[2]/div/div/div[1]/div[2]/div/div/button[1]",
+  aiPdfViewSnippetButton:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[1]/div[2]/button",
+  aiPdfViewAcceptButton:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[3]/div/div[2]/div[2]/button",
+  documentsTable:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[1]/div/table",
+  documentsTableRow:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[1]/div/table/tbody/tr",
+  documentTableHeaderCheckbox:
+    "//*[@id='root']/div/main/div/div[2]/div[2]/div/div[2]/div[1]/div/table/thead/tr/th[1]/input",
+  documentTableDataCheckboxTemplate:
+    "//*[@id='root']/div/main/div/div[2]/div[2]/div/div[2]/div[1]/div/table/tbody/tr[INDEX]/td[1]/input",
+  documentTableAllCheckboxes:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[1]/div/table/tbody/tr/td[1]/input",
+  documentTableCheckedCheckboxes:
+    "/html/body/div/div/main/div/div[2]/div[2]/div/div[2]/div[1]/div/table/tbody/tr/td[1]/input[@type='checkbox' and @checked]",
   
   firstAgreementCardFileName:
     '//*[@id="root"]/div/div[2]/div[2]/div[1]/table/tbody/tr[1]/td[1]/button',
