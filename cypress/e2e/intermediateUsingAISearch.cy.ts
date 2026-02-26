@@ -4,10 +4,10 @@
  */
 
 import {
-    createAgreementWithRandomData,
     navigateToFirstAgreementPreview,
     navigateBack,
 } from '../Pages/basic.cy';
+import { createAgreementWithAISnippetAcceptance } from '../Pages/AISearch.cy';
 import {
     editAgreementWithRandomData,
     deleteAgreementWithConfirmation,
@@ -26,10 +26,10 @@ import {
     extractLastModifiedDates,
     findCommonPrefix,
 } from '../Pages/intermediate.cy';
-import { AgreementPage } from '../Pages/ObjectRepository.cy';
+import { AgreementPage, AI_SEARCH_KEYWORDS } from '../Pages/ObjectRepository.cy';
 import { sendValues } from '../utilities/allureReporting';
 
-describe('Intermediate Tests - Comprehensive Flows', () => {
+describe.only('Intermediate Tests - Comprehensive Flows', () => {
     beforeEach(() => {
         cy.visit('http://localhost:3000/agreements');
     });
@@ -41,7 +41,8 @@ describe('Intermediate Tests - Comprehensive Flows', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         editAgreementWithRandomData();
         navigateBack();
         sortByAgreementName();
@@ -65,11 +66,14 @@ describe('Intermediate Tests - Comprehensive Flows', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
         getVisibleAgreementRows().should('have.length.at.least', 3);
 
@@ -90,7 +94,8 @@ describe('Intermediate Tests - Comprehensive Flows', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         editAgreementWithRandomData();
         deleteAgreementWithCancellation();
         
@@ -110,9 +115,11 @@ describe('Intermediate Tests - Comprehensive Flows', () => {
             'Medium'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
         getVisibleAgreementRows().should('have.length.at.least', 2);
 
@@ -123,14 +130,15 @@ describe('Intermediate Tests - Comprehensive Flows', () => {
         cy.log('Precise search testing completed successfully');
     });
 
-    it('TC-INT05: Sequential operations with navigation', () => {
+    it.only('TC-INT05: Sequential operations with navigation', () => {
         sendValues(
             'Test back button navigation between all operations',
             'TC-INT05: Navigation Flow Testing',
             'Medium'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         editAgreementWithRandomData();
         navigateBack();
         navigateToFirstAgreementPreview();
@@ -155,7 +163,8 @@ describe('Edit Agreement Tests', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
         navigateToFirstAgreementPreview();
         editAgreementWithRandomData();
@@ -170,7 +179,8 @@ describe('Edit Agreement Tests', () => {
             'Medium'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         editAgreementWithRandomData();
         
         cy.log('Create and edit flow completed successfully');
@@ -183,7 +193,8 @@ describe('Edit Agreement Tests', () => {
             'Medium'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         editAgreementWithRandomData();
         editAgreementWithRandomData();
         
@@ -203,7 +214,8 @@ describe('Delete Agreement Tests - Confirmation Path', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
         
         cy.xpath(AgreementPage.firstAgreementCardFileName)
@@ -221,7 +233,8 @@ describe('Delete Agreement Tests - Confirmation Path', () => {
             'Medium'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         
         cy.xpath(AgreementPage.agreementNameDisplay)
             .invoke('text')
@@ -245,7 +258,8 @@ describe('Delete Agreement Tests - Cancellation Path', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
         navigateToFirstAgreementPreview();
         deleteAgreementWithCancellation();
@@ -260,7 +274,8 @@ describe('Delete Agreement Tests - Cancellation Path', () => {
             'Medium'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         deleteAgreementWithCancellation();
         deleteAgreementWithCancellation();
         
@@ -274,7 +289,8 @@ describe('Delete Agreement Tests - Cancellation Path', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         deleteAgreementWithCancellation();
         
         cy.xpath(AgreementPage.agreementNameDisplay)
@@ -299,7 +315,8 @@ describe('Delete Agreement Tests - Combined Scenarios', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         editAgreementWithRandomData();
         
         cy.xpath(AgreementPage.agreementNameDisplay)
@@ -324,9 +341,11 @@ describe('Sort By Functionality Tests', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
         getVisibleAgreementRows().should('have.length.at.least', 2);
 
@@ -341,9 +360,11 @@ describe('Sort By Functionality Tests', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
         getVisibleAgreementRows().should('have.length.at.least', 2);
 
@@ -358,9 +379,11 @@ describe('Sort By Functionality Tests', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
         getVisibleAgreementRows().should('have.length.at.least', 2);
 
@@ -375,11 +398,14 @@ describe('Sort By Functionality Tests', () => {
             'Medium'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
         getVisibleAgreementRows().should('have.length.at.least', 3);
 
@@ -405,9 +431,11 @@ describe('Search Functionality Tests - Agreement ID', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
         getVisibleAgreementRows().should('have.length.at.least', 2);
 
@@ -429,7 +457,8 @@ describe('Search Functionality Tests - Agreement ID', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
 
         extractAgreementIds().then((ids) => {
@@ -450,9 +479,11 @@ describe('Search Functionality Tests - Agreement ID', () => {
             'Medium'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
 
         extractAgreementIds().then((ids) => {
@@ -479,9 +510,11 @@ describe('Search Functionality Tests - Agreement Name', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
         getVisibleAgreementRows().should('have.length.at.least', 2);
 
@@ -500,7 +533,8 @@ describe('Search Functionality Tests - Agreement Name', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
 
         extractAgreementNames().then((names) => {
@@ -519,9 +553,11 @@ describe('Search Functionality Tests - Agreement Name', () => {
             'Medium'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
 
         extractAgreementNames().then((names) => {
@@ -546,7 +582,8 @@ describe('Search Functionality Tests - Last Modified Date', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
 
         extractLastModifiedDates().then((dates) => {
@@ -567,7 +604,8 @@ describe('Search Functionality Tests - Last Modified Date', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
 
         const today = new Date();
@@ -586,9 +624,11 @@ describe('Search Functionality Tests - Last Modified Date', () => {
             'Medium'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
 
         extractLastModifiedDates().then((dates) => {
@@ -618,9 +658,11 @@ describe('Search Functionality Tests - Combined Scenarios', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
 
         getVisibleAgreementRows().should('have.length.at.least', 2);
@@ -645,9 +687,11 @@ describe('Search Functionality Tests - Combined Scenarios', () => {
             'High'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
 
         getVisibleAgreementRows().then(($initialRows) => {
@@ -677,7 +721,8 @@ describe('Search Functionality Tests - Combined Scenarios', () => {
             'Low'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
         searchAgreements('NONEXISTENT_TERM_XYZ_12345');
         cy.log('No results search completed');
@@ -690,7 +735,8 @@ describe('Search Functionality Tests - Combined Scenarios', () => {
             'Medium'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
 
         extractAgreementNames().then((names) => {
@@ -724,11 +770,14 @@ describe('Search Functionality Tests - Combined Scenarios', () => {
             'Medium'
         );
 
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
-        createAgreementWithRandomData();
+        cy.xpath(AgreementPage.createAgreementButton).click();
+        createAgreementWithAISnippetAcceptance(AI_SEARCH_KEYWORDS);
         navigateBack();
 
         getVisibleAgreementRows().should('have.length.at.least', 3);
