@@ -1,6 +1,6 @@
 /**
  * Reusable page actions for basic agreement flows.
- * Use these in tests to perform full flows without duplicating steps.
+ * Use these in tests to perform fundamental operations.
  */
 
 import { AgreementPage } from './ObjectRepository.cy';
@@ -36,4 +36,22 @@ export function createAgreementWithRandomData(): void {
         agreementName
     );
     cy.log('Agreement Successfully Created');
+}
+
+/**
+ * Navigates to the first agreement's preview page from the landing page.
+ */
+export function navigateToFirstAgreementPreview(): void {
+    cy.xpath(AgreementPage.firstAgreementCardFileName).click();
+    cy.url().should('match', /\/agreements\/[^\/]+$/);
+    cy.log('Navigated to agreement preview page');
+}
+
+/**
+ * Navigates back using the back button.
+ */
+export function navigateBack(): void {
+    cy.xpath(AgreementPage.backButton).click();
+    cy.url().should('eq', 'http://localhost:3000/agreements');
+    cy.log('Navigated back using back button');
 }
